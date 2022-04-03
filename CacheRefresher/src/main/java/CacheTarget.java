@@ -1,3 +1,4 @@
+import core.CacheAccessor;
 import core.EventHubConsumer;
 import core.RedisCacheAccessor;
 
@@ -6,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import refresher.*;
 
 public class CacheTarget {
 
@@ -19,10 +22,14 @@ public class CacheTarget {
     public static void main(String[] args) throws IOException, InterruptedException {
         List<EventHubConsumer> receivers = getReceivers(eventHubPartitionCount);
         List<Thread> writerThreads = new ArrayList<>();
-        List<refresher.CacheRefresher> writers = new ArrayList<>();
+        List<CacheRefresher> writers = new ArrayList<>();
+        List<RedisCacheAccessor> accessors = new ArrayList<>();
         RedisCacheAccessor accessor = new RedisCacheAccessor(cacheHost, cacheKey);
+        accessors.add(accessor);
         for (EventHubConsumer receiver : receivers) {
-            refresher.CacheRefresher refresher = new refresher.CacheRefresher(accessor, receiver);
+            RedisCacheAccessor a = new RedisCacheAccessor(cacheHost, cacheKey);
+            CacheRefresher refresher = new CacheRefresher(a, receiver);
+            accessors.add(a);
             writers.add(refresher);
             Thread t = new Thread(refresher);
             t.start();
@@ -33,7 +40,7 @@ public class CacheTarget {
                 new InputStreamReader(System.in));
         while (true) {
             String ip = reader.readLine();
-            if (ip == "q") break;
+            if (ip.equals("q")) break;
             try {
                 Integer.parseInt(ip);
                 System.out.println(accessor.get(ip));
@@ -46,6 +53,9 @@ public class CacheTarget {
         }
         for (EventHubConsumer receiver : receivers) {
             receiver.close();
+        }
+        for (RedisCacheAccessor a : accessors) {
+            a.close();
         }
         for (Thread t : writerThreads) {
             t.join();

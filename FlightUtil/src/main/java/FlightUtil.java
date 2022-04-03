@@ -36,8 +36,9 @@ public class FlightUtil {
                 .buildClient();
         CosmosContainer container = cosmosClient.getDatabase("flight").getContainer("schedule");
         int startId = 1;
-        if (args.length > 1) {
-            startId = Integer.valueOf(args[0]);
+        for (String a : args) {
+            startId = Integer.valueOf(a);
+            break;
         }
         System.out.println("Press any key to insert, q to quit");
         while (true) {

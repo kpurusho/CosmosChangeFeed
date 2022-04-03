@@ -11,6 +11,7 @@ public class RedisCacheAccessor implements CacheAccessor {
         shardInfo = new JedisShardInfo(cacheHost, 6380, true);
         shardInfo.setPassword(cacheKey);
         jedis = new Jedis(shardInfo);
+        jedis.ping();
     }
     @Override
     public void set(String key, String value) {
@@ -20,5 +21,10 @@ public class RedisCacheAccessor implements CacheAccessor {
     @Override
     public String get(String key) {
         return jedis.get(key);
+    }
+
+    @Override
+    public void close() {
+        jedis.close();
     }
 }

@@ -39,14 +39,16 @@ public class SourceCDC {
         List<Thread> pollerThreads = new ArrayList<>();
         for (String partitionKeyValue : partitionKeyValues) {
             Qualifier q = new Qualifier(dbName, containerName, partitionKey, partitionKeyValue);
-            ChangeFeedPoller poller = new ChangeFeedPoller(cosmosClient, q, store, publisher);
+            ChangeFeedPoller poller = new ChangeFeedPoller(cosmosClient, q, store, 0, publisher);
             Thread t = new Thread(poller);
             pollers.add(poller);
             pollerThreads.add(t);
             t.start();
         }
-        System.out.println("Press any key to stop polling..");
-        System.in.read();
+        System.out.println("Press q to stop polling..");
+        while (true) {
+            if (System.in.read() == 'q') break;
+        }
         for (ChangeFeedPoller poller : pollers) {
             poller.stopPolling();
         }

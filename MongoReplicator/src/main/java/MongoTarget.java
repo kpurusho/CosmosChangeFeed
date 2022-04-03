@@ -27,8 +27,10 @@ public class MongoTarget {
             t.start();
             writerThreads.add(t);
         }
-        System.out.println("Press any key to stop");
-        System.in.read();
+        System.out.println("Press q to stop");
+        while (true) {
+            if (System.in.read() == 'q') break;
+        }
         for (MongoWriter writer : writers) {
             writer.stop();
         }
