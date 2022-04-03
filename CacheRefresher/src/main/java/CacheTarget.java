@@ -1,18 +1,16 @@
-
-
 import core.EventHubConsumer;
-import writer.MongoWriter;
+import core.RedisCacheAccessor;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Program {
+public class CacheTarget {
 
-    public static final String mongoUrl = "mongodb://kartmongo:YQXIxujXU7H6zgnT26Yq5vY6eHNUDcFZZbBJd7WJIDokOhj3DpipoEDBdkSJ4SoVBQP1ibySUN27m5dKrWSnPA==@kartmongo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@kartmongo@";
-    public static final String dbname = "flight";
-    public static final String collectionname = "status";
-    public static final String shardkey = "finalcity";
+    public static final String cacheHost = "kartredis.redis.cache.windows.net";
+    public static final String cacheKey = "9IcErru3o72k5ICLptctL59DZauBNiDtwAzCaPgtf6Y=";
 
     public static final String eventEndPoint = "Endpoint=sb://kartevent.servicebus.windows.net/;SharedAccessKeyName=eventpolicy;SharedAccessKey=xtyonwvbR7SItuFlbHzkk0xkcvvblwSV3UwpTgXYfP8=;EntityPath=employeehub";
     public static final String eventHub = "employeehub";
@@ -21,17 +19,29 @@ public class Program {
     public static void main(String[] args) throws IOException, InterruptedException {
         List<EventHubConsumer> receivers = getReceivers(eventHubPartitionCount);
         List<Thread> writerThreads = new ArrayList<>();
-        List<MongoWriter> writers = new ArrayList<>();
+        List<refresher.CacheRefresher> writers = new ArrayList<>();
+        RedisCacheAccessor accessor = new RedisCacheAccessor(cacheHost, cacheKey);
         for (EventHubConsumer receiver : receivers) {
-            MongoWriter writer = new MongoWriter(mongoUrl, dbname, collectionname, shardkey, receiver);
-            writers.add(writer);
-            Thread t = new Thread(writer);
+            refresher.CacheRefresher refresher = new refresher.CacheRefresher(accessor, receiver);
+            writers.add(refresher);
+            Thread t = new Thread(refresher);
             t.start();
             writerThreads.add(t);
         }
-        System.out.println("Press any key to stop");
-        System.in.read();
-        for (MongoWriter writer : writers) {
+        System.out.println("Enter id to fetch or q to exit");
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        while (true) {
+            String ip = reader.readLine();
+            if (ip == "q") break;
+            try {
+                Integer.parseInt(ip);
+                System.out.println(accessor.get(ip));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, Enter id to fetch or q to exit");
+            }
+        }
+        for (refresher.CacheRefresher writer : writers) {
             writer.stop();
         }
         for (EventHubConsumer receiver : receivers) {

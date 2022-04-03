@@ -1,6 +1,5 @@
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.CosmosContainer;
 import com.azure.cosmos.ThrottlingRetryOptions;
 import core.CosmosCheckpointStore;
 import core.EventHubPublisher;
@@ -13,7 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Program {
+public class SourceCDC {
 
     public static final String cosmosEndPoint = "https://kartcosmossql.documents.azure.com:443/";
     public static final String cosmosKey = "XFmJKi0cquhDZ47QQHXmdRuWrIR9RzPqXGwRFvhJmHaEwmSrXaFW4BSHA48OLCfJ90hHeoExBNPQaOY6Q5dBag==";

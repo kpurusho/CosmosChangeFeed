@@ -18,7 +18,7 @@ class Schedule {
     public String status;
 }
 
-public class Program {
+public class FlightUtil {
     public static final String cosmosEndPoint = "https://kartcosmossql.documents.azure.com:443/";
     public static final String cosmosKey = "XFmJKi0cquhDZ47QQHXmdRuWrIR9RzPqXGwRFvhJmHaEwmSrXaFW4BSHA48OLCfJ90hHeoExBNPQaOY6Q5dBag==";
 

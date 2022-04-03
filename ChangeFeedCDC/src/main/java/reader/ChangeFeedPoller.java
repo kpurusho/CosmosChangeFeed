@@ -106,19 +106,28 @@ public class ChangeFeedPoller implements Runnable{
         String lastPkValue = partitionKeyValue;
         for (ObjectNode jsonNodes : response.getResults()) {
             changes.add(jsonNodes.toString());
-            String pkValue = jsonNodes.get(partitionKey).toString();
-            System.out.println(String.format("%s,%s", jsonNodes.get("id").toString(), pkValue));
-            if (lastPkValue != pkValue) {
-                publisher.publish(changes, pkValue);
-                changes.clear();
-                lastPkValue = pkValue;
-            }
+            lastPkValue = publishItems(changes, lastPkValue, jsonNodes);
             docPublished++;
         }
-        if (changes.size() > 0)
-            publisher.publish(changes, lastPkValue);
+        publishPendingItems(changes, lastPkValue);
 
         return docPublished;
+    }
+
+    private void publishPendingItems(List<String> changes, String lastPkValue) {
+        if (changes.size() > 0)
+            publisher.publish(changes, lastPkValue);
+    }
+
+    private String publishItems(List<String> changes, String lastPkValue, ObjectNode jsonNodes) {
+        String pkValue = jsonNodes.get(partitionKey).toString();
+        System.out.println(String.format("%s,%s", jsonNodes.get("id").toString(), pkValue));
+        if (lastPkValue != pkValue) {
+            publisher.publish(changes, pkValue);
+            changes.clear();
+            lastPkValue = pkValue;
+        }
+        return lastPkValue;
     }
 }
 
