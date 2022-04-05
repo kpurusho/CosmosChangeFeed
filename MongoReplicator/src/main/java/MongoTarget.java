@@ -47,7 +47,7 @@ public class MongoTarget {
     private static List<EventHubConsumer> getReceivers(int partitionCount) {
         List<EventHubConsumer> receivers = new ArrayList<>();
         for (int i = 0; i < partitionCount; i++) {
-            receivers.add(new EventHubConsumer(eventEndPoint, String.format("%d", i)));
+            receivers.add(new EventHubConsumer(eventEndPoint, String.format("%d", i), "mongoconsumer"));
         }
         return receivers;
     }

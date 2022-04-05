@@ -28,6 +28,7 @@ public class MongoWriter implements Runnable {
         this.shardKey = shardKey;
         MongoDatabase db = mongoClient.getDatabase(dbName);
         collection = db.getCollection(collectionName);
+        System.out.println("Current doc count:" + collection.countDocuments());
         this.receiver = receiver;
     }
 

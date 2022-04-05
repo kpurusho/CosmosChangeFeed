@@ -14,6 +14,11 @@
             <artifactId>azure-cosmos</artifactId>
             <version>4.28.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>3.12.3</version>
+        </dependency>
     </dependencies>
 
     <properties>

@@ -15,10 +15,10 @@ public class EventHubConsumer implements Consumer {
     private String partitionId;
     private Long lastSeqNumber = Long.valueOf(-1);
 
-    public EventHubConsumer(String connectionString, String partitionId) {
+    public EventHubConsumer(String connectionString, String partitionId, String consumerGroup) {
         consumer = new EventHubClientBuilder()
                 .connectionString(connectionString)
-                .consumerGroup(EventHubClientBuilder.DEFAULT_CONSUMER_GROUP_NAME).buildConsumerClient();
+                .consumerGroup(consumerGroup).buildConsumerClient();
         this.partitionId = partitionId;
     }
 
