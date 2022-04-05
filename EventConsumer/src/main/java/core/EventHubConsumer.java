@@ -1,25 +1,42 @@
 package core;
 
-import com.azure.core.util.IterableStream;
+import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
-import com.azure.messaging.eventhubs.EventHubConsumerClient;
+import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.azure.messaging.eventhubs.models.EventPosition;
-import com.azure.messaging.eventhubs.models.PartitionEvent;
+import reactor.core.Disposable;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class EventHubConsumer implements Consumer {
-    private final EventHubConsumerClient consumer;
+    private final EventHubConsumerAsyncClient consumer;
     private String partitionId;
-    private Long lastSeqNumber = Long.valueOf(-1);
+    private BlockingQueue<String> buffer = new ArrayBlockingQueue<String>(100);
+    private Disposable subscription;
 
     public EventHubConsumer(String connectionString, String partitionId, String consumerGroup) {
         consumer = new EventHubClientBuilder()
                 .connectionString(connectionString)
-                .consumerGroup(consumerGroup).buildConsumerClient();
+                .consumerGroup(consumerGroup).buildAsyncConsumerClient();
         this.partitionId = partitionId;
+        startConsuming();
+    }
+
+    private void startConsuming() {
+        subscription = consumer.receiveFromPartition(partitionId, EventPosition.latest())
+                .subscribe(partitionEvent -> {
+                            EventData event = partitionEvent.getData();
+                            String content = new String(event.getBody());
+                            buffer.add(content);
+                        },
+                        error -> {
+                            System.err.println("Error occurred while consuming events: " + error);
+                        }, () -> {
+                            System.out.println("Finished reading events.");
+                        });
     }
 
     @Override
@@ -34,25 +51,20 @@ public class EventHubConsumer implements Consumer {
 
     private List<String> getData() {
         List<String> data = new ArrayList<>();
-        IterableStream<PartitionEvent> result = consumer.receiveFromPartition(partitionId,
-                100,
-                getEventPosition(),
-                Duration.ofSeconds(1));
-        for(PartitionEvent e : result) {
-            data.add(new String(e.getData().getBody()));
-            lastSeqNumber = e.getData().getSequenceNumber();
+        while (true) {
+            String e = buffer.poll();
+            if (e != null)
+                data.add(e);
+            else
+                break;
         }
         return data;
     }
 
     @Override
     public void close() {
+        subscription.dispose();
         consumer.close();
     }
 
-    private EventPosition getEventPosition() {
-        if (lastSeqNumber == -1)
-            return EventPosition.latest();
-        return EventPosition.fromSequenceNumber(lastSeqNumber);
-    }
 }

@@ -34,7 +34,6 @@ public class FlightUtil {
     public static final String mongoUrl = "mongodb://kartmongo:YQXIxujXU7H6zgnT26Yq5vY6eHNUDcFZZbBJd7WJIDokOhj3DpipoEDBdkSJ4SoVBQP1ibySUN27m5dKrWSnPA==@kartmongo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@kartmongo@";
     public static final String mongoDbName = "flight";
     public static final String mongoCollectionName = "status";
-    public static final String shardkey = "finalcity";
 
     public static String[] cities = {"Agra", "Delhi", "Madurai", "Coimbatore"};
     public static String[] dest = {"Chennai", "Mumbai"};
@@ -83,9 +82,9 @@ public class FlightUtil {
     }
 
     private static void prepareSources(CosmosClient cosmosClient, int startId) {
-        recreateSource(cosmosClient, startId);
-        recreateCPContainer(cosmosClient);
         recreateMongoCollection();
+        recreateCPContainer(cosmosClient);
+        recreateSource(cosmosClient, startId);
     }
 
     private static void recreateMongoCollection() {
