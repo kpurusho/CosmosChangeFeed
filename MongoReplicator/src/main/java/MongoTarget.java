@@ -7,13 +7,12 @@ import java.util.List;
 
 public class MongoTarget {
 
-    public static final String mongoUrl = "mongodb://kartmongo:YQXIxujXU7H6zgnT26Yq5vY6eHNUDcFZZbBJd7WJIDokOhj3DpipoEDBdkSJ4SoVBQP1ibySUN27m5dKrWSnPA==@kartmongo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@kartmongo@";
+    public static final String mongoUrl = "ToBeFilled";
     public static final String dbname = "flight";
     public static final String collectionname = "status";
     public static final String shardkey = "finalcity";
 
-    public static final String eventEndPoint = "Endpoint=sb://kartevent.servicebus.windows.net/;SharedAccessKeyName=eventpolicy;SharedAccessKey=xtyonwvbR7SItuFlbHzkk0xkcvvblwSV3UwpTgXYfP8=;EntityPath=employeehub";
-    public static final String eventHub = "employeehub";
+    public static final String eventEndPoint = "ToBeFilled";
     public static final int eventHubPartitionCount = 2;
 
     public static void main(String[] args) throws IOException, InterruptedException {

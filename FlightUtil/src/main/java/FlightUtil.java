@@ -22,8 +22,8 @@ class Schedule {
 }
 
 public class FlightUtil {
-    public static final String cosmosEndPoint = "https://kartcosmossql.documents.azure.com:443/";
-    public static final String cosmosKey = "XFmJKi0cquhDZ47QQHXmdRuWrIR9RzPqXGwRFvhJmHaEwmSrXaFW4BSHA48OLCfJ90hHeoExBNPQaOY6Q5dBag==";
+    public static final String cosmosEndPoint = "ToBeFilled";
+    public static final String cosmosKey = "ToBeFilled";
 
     public static final String dbName = "flight";
     public static final String containerName = "schedule";
@@ -31,7 +31,7 @@ public class FlightUtil {
     public static final String checkpointDbName = "checkpoint";
     public static final String cpContainerName = "session";
 
-    public static final String mongoUrl = "mongodb://kartmongo:YQXIxujXU7H6zgnT26Yq5vY6eHNUDcFZZbBJd7WJIDokOhj3DpipoEDBdkSJ4SoVBQP1ibySUN27m5dKrWSnPA==@kartmongo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@kartmongo@";
+    public static final String mongoUrl = "ToBeFilled";
     public static final String mongoDbName = "flight";
     public static final String mongoCollectionName = "status";
 

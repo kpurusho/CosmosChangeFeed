@@ -14,15 +14,15 @@ import java.util.List;
 
 public class SourceCDC {
 
-    public static final String cosmosEndPoint = "https://kartcosmossql.documents.azure.com:443/";
-    public static final String cosmosKey = "XFmJKi0cquhDZ47QQHXmdRuWrIR9RzPqXGwRFvhJmHaEwmSrXaFW4BSHA48OLCfJ90hHeoExBNPQaOY6Q5dBag==";
+    public static final String cosmosEndPoint = "ToBeFilled";
+    public static final String cosmosKey = "ToBeFilled";
     public static final String dbName = "flight";
     public static final String containerName = "schedule";
     public static final String partitionKey = "finalcity";
     public static final String[] partitionKeyValues = {"Chennai", "Mumbai"};
 
-    public static final String eventEndPoint = "Endpoint=sb://kartevent.servicebus.windows.net/;SharedAccessKeyName=eventpolicy;SharedAccessKey=xtyonwvbR7SItuFlbHzkk0xkcvvblwSV3UwpTgXYfP8=;EntityPath=employeehub";
-    public static final String eventHub = "employeehub";
+    public static final String eventEndPoint = "ToBeFilled";
+    public static final String eventHub = "ToBeFilled";
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ThrottlingRetryOptions retryOptions = new ThrottlingRetryOptions();

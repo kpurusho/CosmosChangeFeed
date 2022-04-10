@@ -12,11 +12,10 @@ import refresher.*;
 
 public class CacheTarget {
 
-    public static final String cacheHost = "kartredis.redis.cache.windows.net";
-    public static final String cacheKey = "9IcErru3o72k5ICLptctL59DZauBNiDtwAzCaPgtf6Y=";
+    public static final String cacheHost = "ToBeFilled";
+    public static final String cacheKey = "ToBeFilled";
 
-    public static final String eventEndPoint = "Endpoint=sb://kartevent.servicebus.windows.net/;SharedAccessKeyName=eventpolicy;SharedAccessKey=xtyonwvbR7SItuFlbHzkk0xkcvvblwSV3UwpTgXYfP8=;EntityPath=employeehub";
-    public static final String eventHub = "employeehub";
+    public static final String eventEndPoint = "ToBeFilled";
     public static final int eventHubPartitionCount = 2;
 
     public static void main(String[] args) throws IOException, InterruptedException {
