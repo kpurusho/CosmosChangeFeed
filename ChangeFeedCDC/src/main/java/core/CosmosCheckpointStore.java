@@ -18,14 +18,15 @@ class CheckpointItem {
 }
 
 public class CosmosCheckpointStore implements CheckpointStore {
-    public static final String checkpointDbName = "checkpoint";
-    public static final String containerName = "session";
     public CosmosContainer container;
 
-    public CosmosCheckpointStore(CosmosClient client) {
+    public CosmosCheckpointStore(CosmosClient client,
+                                 String checkpointDbName,
+                                 String checkpointContainerName) {
         client.createDatabaseIfNotExists(checkpointDbName);
-        client.getDatabase(checkpointDbName).createContainerIfNotExists(containerName, "/id");
-        container = client.getDatabase(checkpointDbName).getContainer(containerName);
+        client.getDatabase(checkpointDbName).
+                createContainerIfNotExists(checkpointContainerName, "/id");
+        container = client.getDatabase(checkpointDbName).getContainer(checkpointContainerName);
     }
     @Override
     public void addCheckpoint(String key, String value) {

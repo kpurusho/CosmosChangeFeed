@@ -22,7 +22,8 @@ public class EventHubPublisher implements Publisher {
         CreateBatchOptions options = new CreateBatchOptions();
         EventDataBatch batch = producer.createBatch(options.setPartitionKey(partitionKeyValue));
         for (String d : data) {
-            if (batch.tryAdd(new EventData(d))) {
+            if (!batch.tryAdd(new EventData(d))) {
+                //batch is full
                 producer.send(batch);
                 batch = producer.createBatch(options.setPartitionKey(partitionKeyValue));
             }

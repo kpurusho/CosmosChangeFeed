@@ -56,5 +56,6 @@
     <orderEntry type="library" name="Maven: com.azure:azure-core-amqp:2.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:qpid-proton-j-extensions:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.qpid:proton-j:0.33.4" level="project" />
+    <orderEntry type="module" module-name="EventConsumer" />
   </component>
 </module>

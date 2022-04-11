@@ -19,6 +19,12 @@
             <artifactId>azure-messaging-eventhubs</artifactId>
             <version>5.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>EventConsumer</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <properties>

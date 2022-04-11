@@ -14,15 +14,23 @@ import java.util.List;
 
 public class SourceCDC {
 
+    //Section to be updated
+    public static final String eventEndPoint = "ToBeFilled";
+    public static final String eventHub = "ToBeFilled";
     public static final String cosmosEndPoint = "ToBeFilled";
     public static final String cosmosKey = "ToBeFilled";
+
+    //Source database and container
     public static final String dbName = "flight";
     public static final String containerName = "schedule";
     public static final String partitionKey = "finalcity";
-    public static final String[] partitionKeyValues = {"Chennai", "Mumbai"};
 
-    public static final String eventEndPoint = "ToBeFilled";
-    public static final String eventHub = "ToBeFilled";
+    //Checkpoint database and container
+    public static final String checkpointDbName = "checkpoint";
+    public static final String checkpointContainerName = "session";
+
+    //Distinct partition key values
+    public static final String[] partitionKeyValues = {"Chennai", "Mumbai"};
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ThrottlingRetryOptions retryOptions = new ThrottlingRetryOptions();
@@ -34,7 +42,7 @@ public class SourceCDC {
                 .throttlingRetryOptions(retryOptions)
                 .buildClient();
         Publisher publisher = new EventHubPublisher(eventEndPoint, eventHub);
-        CosmosCheckpointStore store = new CosmosCheckpointStore(cosmosClient);
+        CosmosCheckpointStore store = new CosmosCheckpointStore(cosmosClient, checkpointDbName, checkpointContainerName);
         List<ChangeFeedPoller> pollers = new ArrayList<>();
         List<Thread> pollerThreads = new ArrayList<>();
         for (String partitionKeyValue : partitionKeyValues) {

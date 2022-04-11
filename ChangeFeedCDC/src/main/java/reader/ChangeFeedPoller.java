@@ -61,16 +61,19 @@ public class ChangeFeedPoller implements Runnable{
 
     private CosmosChangeFeedRequestOptions createFeedRequestOptions() {
         if (!Objects.equals(lastContinuationToken, "")) {
+            //If lastContiunationToken is available then start from token
             return CosmosChangeFeedRequestOptions.
                     createForProcessingFromContinuation(
                             lastContinuationToken).
                     setMaxItemCount(batchSize);
         }
         if (timeEpoch == 0) {
+            //Start from beginning
             return CosmosChangeFeedRequestOptions.
                     createForProcessingFromBeginning(getFeedRange()).
                     setMaxItemCount(batchSize);
         }
+        //Start from user specified point in time
         return CosmosChangeFeedRequestOptions.
                 createForProcessingFromPointInTime(
                         Instant.ofEpochSecond(timeEpoch), getFeedRange()).
@@ -88,10 +91,16 @@ public class ChangeFeedPoller implements Runnable{
     public void run() {
         while (!stopRequested.get()) {
             try {
+                //for each page
                 for (FeedResponse<ObjectNode> response : container.queryChangeFeed(createFeedRequestOptions(),
                         ObjectNode.class).iterableByPage()) {
+                    //save the continuation token
                     lastContinuationToken = response.getContinuationToken();
-                    if (publishPage(response) == 0) Thread.sleep(100);
+                    //publish 'changed items' in current page to external message queue
+                    if (publishPage(response) == 0)
+                        Thread.sleep(100);  //If no 'changed items' available in current page, then wait for 100ms
+
+                    //Persist the continuation token to resume later in case of crash
                     checkpointStore.addCheckpoint(checkpointKey, lastContinuationToken);
                 }
             } catch (Exception ex) {
@@ -104,6 +113,7 @@ public class ChangeFeedPoller implements Runnable{
         int docPublished = 0;
         List<String> changes = new ArrayList<>();
         String lastPkValue = partitionKeyValue;
+        //send 'changed items' batched by partition key value
         for (ObjectNode jsonNodes : response.getResults()) {
             changes.add(jsonNodes.toString());
             lastPkValue = publishItems(changes, lastPkValue, jsonNodes);
